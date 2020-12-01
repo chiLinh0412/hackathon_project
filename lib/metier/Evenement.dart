@@ -1,9 +1,8 @@
 import 'dart:core';
 
-import 'package:flutter/cupertino.dart';
 
 class Evenement {
-  int identifiant;
+  String identifiant;
   String ville;
   String adresse;
   String titre;
@@ -15,7 +14,7 @@ class Evenement {
   String numeroTel;
   String lien_canonique;
   String siteWeb;
-  String coordonneGeo;
+  List<dynamic> coordonneGeo;
 
   Evenement(
       String ville,
@@ -29,7 +28,7 @@ class Evenement {
       String numeroTel,
       String lien_canonique,
       String siteWeb,
-      String coordonneGeo) {
+      List<dynamic> coordonneGeo) {
     this.ville = ville;
     this.adresse = adresse;
     this.titre = titre;
