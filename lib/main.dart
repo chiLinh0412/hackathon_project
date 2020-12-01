@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/service/GlobaleService.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,7 +32,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -50,68 +51,170 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  String _selection;
+  String _recherche;
+
+  final myController = TextEditingController();
+
+  final items = List<String>.generate(2, (i) => "Item $i");
+
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
+
+      body: Container (
+
+        child :
+
+
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+          mainAxisSize: MainAxisSize.max,
+          children : [
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child:
+              Row  (
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+
+                  select(),
+
+                  Expanded(
+                    child : TextField(
+                      controller: myController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Recherche',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    tooltip: 'Filtre',
+                    onPressed: () {
+                      setState(() {
+                        _recherche = myController.text;
+                      });
+                    },
+                  ),
+
+
+                ],),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+            Text("Verification ---> Filtrage par $_selection, La valeur $_recherche ",
+                style : TextStyle(color: Colors.black,
+                    fontSize: 20 )),
+            Expanded(
+              child : buildStreamListView(),
+            ),],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
+
+  Widget select() {
+    return DropdownButton<String>(
+      value: _selection,
+      icon: Icon(Icons.arrow_downward),
+      iconSize: 20,
+      elevation: 16,
+      style: TextStyle(color: Colors.black,
+          fontSize: 20 ),
+      underline: Container(
+        height: 2,
+        decoration: new BoxDecoration(
+            borderRadius:BorderRadius.all(Radius.circular(2.0)),
+            border: new Border.all(color: Colors.black38)
+        ),
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          _selection = newValue;
+        });
+      },
+      items: <String>['','Lieu','Thème','Date','Mot clés']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child : Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget buildStreamListView() {
+    return new StreamBuilder(
+      stream: GlobaleService.Evenementstream,
+      builder: (context, snapshot)  {
+        print(snapshot);
+        if(!snapshot.hasData){
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return ListView.builder (
+          itemCount:  snapshot.data.documents.length,
+          itemBuilder: (context,index){
+
+            DocumentSnapshot documentSnapshot = snapshot.data.documents[index];
+
+            return  Container(
+              child: Card(
+                shape: new RoundedRectangleBorder(
+                    side: new BorderSide(color: Colors.indigo, width: 4.0),
+                    borderRadius: BorderRadius.circular(4.0)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const ListTile(
+                      leading: Icon(Icons.call), // documentSnapshot["Image"].toString(),
+                      title: Text("test"), //Text(documentSnapshot["Titre"].toString()),
+                      subtitle: Text("test"),//Text(documentSnapshot["Description"].toString()),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                          child: const Text('DETAILS'),
+                          onPressed: () { /* ... */ },
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          child: const Text('LISTEN'),
+                          onPressed: () { /* ... */ },
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );;
+        },
+
+        );
+
+      },
+    );
+  }
+
 }
