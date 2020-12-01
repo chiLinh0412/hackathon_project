@@ -1,28 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class GlobaleService {
+  static final CollectionReference Eventcollection =
+      FirebaseFirestore.instance.collection("Evenements");
 
-class GlobaleService{
-  static final CollectionReference Eventcollection = FirebaseFirestore.instance.collection("Evenement");
   static Stream<QuerySnapshot> get Evenementstream {
     return Eventcollection.orderBy("titre_fr", descending: true).snapshots();
   }
-  static Future<QuerySnapshot> RechercheEvenement(String titreEvent) async {
-    Eventcollection.where("titre_fr", isEqualTo: titreEvent ).snapshots();
-  }
-  static Future<DocumentReference> RechercheParLieu(String nomVille) async {
-    Eventcollection.where("ville", isEqualTo: nomVille ).snapshots();
 
-  }
-  static Future<DocumentReference> RechercheParTheme(String nomTheme) async{
-    Eventcollection.where("thematiques", isEqualTo: nomTheme ).snapshots();
-
-  }
-  static Future<DocumentReference> RechercheParMotCle(String motcle) async {
-    Eventcollection.where("mots_cles_fr", isEqualTo: motcle ).snapshots();
-
-  }
-  static Future<DocumentReference> RechercheParDate(String date) async{
-    Eventcollection.where("dates", isEqualTo: date ).snapshots();
-
+  Stream<QuerySnapshot> streamRechercheEvenement(String titreEvent,
+      String nomVille, String nomTheme, String motcle, String date) {
+    Stream<QuerySnapshot> retour;
+    if (titreEvent != null && titreEvent != "") {
+      retour = Eventcollection.where('titre_fr', isGreaterThanOrEqualTo: titreEvent)
+              .where('titre_fr', isLessThan: titreEvent + 'z')
+              .snapshots();
+    }
+    if (nomVille != null && nomVille != "") {
+      retour = Eventcollection.where('ville', isGreaterThanOrEqualTo: nomVille)
+          .where('ville', isLessThan: nomVille + 'z')
+          .snapshots();
+    }
+    if (nomTheme != null && nomTheme != "") {
+      retour = Eventcollection.where('thematiques',
+              isGreaterThanOrEqualTo: nomTheme)
+          .where('thematiques', isLessThan: nomTheme + 'z')
+          .snapshots();
+    }
+    if (motcle != null && motcle != "") {
+      retour = Eventcollection.where('mots_cles_fr',
+              isGreaterThanOrEqualTo: motcle)
+          .where('mots_cles_fr', isLessThan: motcle + 'z')
+          .snapshots();
+    }
+    if (date != null && date != "") {
+      retour = Eventcollection.where('dates', isGreaterThanOrEqualTo: date)
+          .where('dates', isLessThan: date + 'z')
+          .snapshots();
+    }
+    return retour;
   }
 }

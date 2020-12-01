@@ -44,7 +44,7 @@ class Evenement {
     this.coordonneGeo = coordonneGeo;
   }
 
-  fromJson(Map<String, dynamic> json) {
+  Evenement.fromJson(Map<String, dynamic> json) {
     this.identifiant = json['identifiant'];
     this.ville = json['ville'];
     this.adresse = json['adresse'];
