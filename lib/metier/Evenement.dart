@@ -11,9 +11,9 @@ class Evenement {
   String description;
   String motCles;
   String image;
-  DateTime _dateTime;
+  String _dateTime;
   String horraire;
-  int numeroTel;
+  String numeroTel;
   String lien_canonique;
   String siteWeb;
   String coordonneGeo;
@@ -25,9 +25,9 @@ class Evenement {
       String description,
       String motCles,
       String image,
-      DateTime _dateTime,
+      String _dateTime,
       String horraire,
-      int numeroTel,
+      String numeroTel,
       String lien_canonique,
       String siteWeb,
       String coordonneGeo) {
@@ -56,10 +56,10 @@ class Evenement {
     this.image = json['image'];
     this._dateTime = json['dates'];
     this.horraire = json['horaires_detailles_fr'];
-    this.numeroTel = json['horaires_detailles_fr'];
-    this.lien_canonique = json['horaires_detailles_fr'];
-    this.siteWeb = json['horaires_detailles_fr'];
-    this.coordonneGeo = json['horaires_detailles_fr'];
+    this.numeroTel = json['telephone_du_lieu'];
+    this.lien_canonique = json['lien_canonique'];
+    this.siteWeb = json['site_web_du_lieu'];
+    this.coordonneGeo = json['geolocalisation'];
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -72,10 +72,10 @@ class Evenement {
     data['image'] = this.image;
     data['dates'] = this._dateTime;
     data['horaires_detailles_fr'] = this.horraire;
-    data['Date'] = this.numeroTel;
-    data['Date'] = this.lien_canonique;
-    data['Date'] = this.siteWeb;
-    data['Date'] = this.coordonneGeo;
+    data['telephone_du_lieu'] = this.numeroTel;
+    data['lien_canonique'] = this.lien_canonique;
+    data['site_web_du_lieu'] = this.siteWeb;
+    data['geolocalisation'] = this.coordonneGeo;
     return data;
   }
 }
