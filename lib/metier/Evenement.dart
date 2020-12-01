@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 class Evenement {
   int identifiant;
   String ville;
-
   String adresse;
   String titre;
   String description;
@@ -45,8 +44,7 @@ class Evenement {
     this.coordonneGeo = coordonneGeo;
   }
 
-
-  Evenement.fromJson(Map<String, dynamic> json) {
+  fromJson(Map<String, dynamic> json) {
     this.identifiant = json['identifiant'];
     this.ville = json['ville'];
     this.adresse = json['adresse'];
@@ -61,6 +59,7 @@ class Evenement {
     this.siteWeb = json['site_web_du_lieu'];
     this.coordonneGeo = json['geolocalisation'];
   }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['identifiant'] = this.identifiant;
