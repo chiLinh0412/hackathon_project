@@ -1,8 +1,9 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hackathon_project/service/Auth.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
 import 'Register.dart';
@@ -23,6 +24,9 @@ class _Login extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    if (null != Provider.of<User>(context)) {
+      return MyApp();
+    }
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -55,7 +59,7 @@ class _Login extends State<Login> {
                   onChanged: (val) => password = val,
                 ),
                 SizedBox(height: 10.0),
-                Text(error, style:TextStyle(color:Colors.red)),
+                Text(error, style: TextStyle(color: Colors.red)),
                 FlatButton(
                   onPressed: () {
                     connexion();
@@ -101,13 +105,13 @@ class _Login extends State<Login> {
       });
       try {
         await _auth.signInEmail(email, password).then((value) => {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()))
+              Navigator.pop(
+                  context)
             });
         setState(() {
           loading = false;
         });
-      }catch (e) {
+      } catch (e) {
         setState(() {
           print('ERROR');
           loading = false;

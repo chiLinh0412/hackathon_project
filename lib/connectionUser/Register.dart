@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_project/service/Auth.dart';
+import 'package:provider/provider.dart';
 import 'dart:developer';
 
 import '../main.dart';
@@ -24,6 +26,10 @@ class _Register extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    if (null != Provider.of<User>(context)) {
+      return MyApp();
+    }
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
