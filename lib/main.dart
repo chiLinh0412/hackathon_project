@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/CarteInteractive.dart';
 import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-       home: MyHomePage(title: 'Flutter Demo Home Page'),
+       home: CarteInteractive(),
       )
     );
   }

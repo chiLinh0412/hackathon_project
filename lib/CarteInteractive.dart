@@ -31,6 +31,8 @@ class _CarteInteractive extends State<CarteInteractive> {
 
   void MarkersMiseAJour() {
     setState(() {
+      _markers.add(MarkerTeste2);
+      _markers.add(MarkerTeste1);
       int id = 0;
       for (Evenement e in events) {
         int markId = id;
@@ -112,7 +114,7 @@ class _CarteInteractive extends State<CarteInteractive> {
         onMapCreated: (GoogleMapController contoller) {
           _controller.complete(contoller);
         },
-        //marker
+
       ),
     );
   }
@@ -153,3 +155,20 @@ class _CarteInteractive extends State<CarteInteractive> {
         CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoom)));
   }
 }
+Marker MarkerTeste1 = Marker(
+  markerId: MarkerId('MarkerTeste1'),
+  position: LatLng(40.738380, -73.988426),
+  infoWindow: InfoWindow(title: 'GrameMarkerTeste1'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
+
+Marker MarkerTeste2 = Marker(
+  markerId: MarkerId('MarkerTeste2'),
+  position: LatLng(40.761421, -73.981667),
+  infoWindow: InfoWindow(title: 'MarkerTeste2'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
