@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
+import 'package:provider/provider.dart';
 
 import 'metier/Evenement.dart';
 import 'individual.dart';
@@ -17,7 +20,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return StreamProvider<User>.value(
+      value: Auth().user,
+      child: MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -35,7 +40,8 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+       home: MyHomePage(title: 'Flutter Demo Home Page'),
+      )
     );
   }
 }
@@ -59,12 +65,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  GlobaleService globaleService = new GlobaleService();
+
   String _selection;
   String _recherche;
 
   final myController = TextEditingController();
-
-  final items = List<String>.generate(2, (i) => "Item $i");
 
 
   @override
@@ -157,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _selection = newValue;
         });
       },
-      items: <String>['Lieu','Thème','Date','Mot clés']
+      items: <String>['Mot clés','Lieu','Thème','Date']
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -170,7 +176,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildStreamListView(BuildContext context) {
 
     return StreamBuilder(
-      stream :  FirebaseFirestore.instance.collection("Evenements").limit(5).snapshots(),
+
+      stream: GlobaleService.Evenementstream,
       builder: (context, snapshot)  {
 
         if(snapshot.hasError){
@@ -204,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ListTile(
                         contentPadding: EdgeInsets.all(8.0),
                         leading: Image.network(event.image.toString()),
-                        title: Text(event.titre.toString()),
+                        title: Text(event.titre.toString()+" à "+event.ville.toString()),
                         subtitle: Text(event.descriptionCourt.toString()),
                         onTap: ()=> {
                           Navigator.push(
