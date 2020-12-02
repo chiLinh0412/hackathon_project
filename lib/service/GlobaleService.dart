@@ -12,7 +12,7 @@ class GlobaleService {
       String nomVille, String nomTheme, String motcle, String date) {
     Stream<QuerySnapshot> retour;
     if (titreEvent != null && titreEvent != "") {
-      retour = Eventcollection.where('titre_fr', isGreaterThanOrEqualTo: titreEvent)
+      retour =  Eventcollection.where('titre_fr', isGreaterThanOrEqualTo: titreEvent)
               .where('titre_fr', isLessThan: titreEvent + 'z')
               .snapshots();
     }
