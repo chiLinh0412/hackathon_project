@@ -56,10 +56,6 @@ class _Login extends State<Login> {
                 FlatButton(
                   onPressed: () {
                     connexion();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
-                    );
                   },
                   color: Colors.yellowAccent,
                   child: Text('Connexion'),
@@ -101,7 +97,10 @@ class _Login extends State<Login> {
         loading = true;
       });
       try {
-        await _auth.signInEmail(email, password);
+        _auth.signInEmail(email, password).then((value) => {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyApp()))
+            });
         setState(() {
           loading = false;
         });

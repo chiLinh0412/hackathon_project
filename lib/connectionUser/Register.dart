@@ -80,10 +80,6 @@ class _Register extends State<Register> {
                 FlatButton(
                   onPressed: () {
                     register();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
-                    );
                   },
                   padding: const EdgeInsets.all(10.0),
                   color: Colors.yellowAccent,
@@ -105,7 +101,9 @@ class _Register extends State<Register> {
         loading = true;
       });
       try {
-        await _auth.registerEmail(email, password, pseudo, urlphoto);
+        await _auth
+            .registerEmail(email, password, pseudo, urlphoto)
+            .then((value) => {Navigator.pop(context)});
         setState(() {
           loading = false;
         });
