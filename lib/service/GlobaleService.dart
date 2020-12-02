@@ -8,36 +8,71 @@ class GlobaleService {
     return Eventcollection.orderBy("titre_fr", descending: true).snapshots();
   }
 
-  Stream<QuerySnapshot> streamRechercheEvenement(String titreEvent,
-      String nomVille, String nomTheme, String motcle, String date) {
+  Stream<QuerySnapshot> streamRechercheEvenement(
+      String critere, String valeurUser) {
     Stream<QuerySnapshot> retour;
-    if (titreEvent != null && titreEvent != "") {
-      retour =  Eventcollection.where('titre_fr', isGreaterThanOrEqualTo: titreEvent)
-              .where('titre_fr', isLessThan: titreEvent + 'z')
-              .snapshots();
+    String crit = critere;
+
+    switch (crit) {
+      case "titre_fr":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('titre_fr',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('titre_fr', isLessThan: valeurUser + 'z')
+                .snapshots();
+          }
+          return retour;
+        }
+        break;
+
+      case "ville":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('ville',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('ville', isLessThan: valeurUser + 'z')
+                .snapshots();
+          }
+          return retour;
+        }
+        break;
+
+      case "themetique":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('thematiques',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('thematiques', isLessThan: valeurUser + 'z')
+                .snapshots();
+          }
+          return retour;
+        }
+        break;
+
+      case "Mot_cle":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('mots_cles_fr',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('mots_cles_fr', isLessThan: valeurUser + 'z')
+                .snapshots();
+          }
+          return retour;
+        }
+        break;
+
+      case "date":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('date',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('date', isLessThan: valeurUser + 'z')
+                .snapshots();
+          }
+          return retour;
+        }
+        break;
     }
-    if (nomVille != null && nomVille != "") {
-      retour = Eventcollection.where('ville', isGreaterThanOrEqualTo: nomVille)
-          .where('ville', isLessThan: nomVille + 'z')
-          .snapshots();
-    }
-    if (nomTheme != null && nomTheme != "") {
-      retour = Eventcollection.where('thematiques',
-              isGreaterThanOrEqualTo: nomTheme)
-          .where('thematiques', isLessThan: nomTheme + 'z')
-          .snapshots();
-    }
-    if (motcle != null && motcle != "") {
-      retour = Eventcollection.where('mots_cles_fr',
-              isGreaterThanOrEqualTo: motcle)
-          .where('mots_cles_fr', isLessThan: motcle + 'z')
-          .snapshots();
-    }
-    if (date != null && date != "") {
-      retour = Eventcollection.where('dates', isGreaterThanOrEqualTo: date)
-          .where('dates', isLessThan: date + 'z')
-          .snapshots();
-    }
-    return retour;
   }
 }

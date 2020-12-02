@@ -109,7 +109,7 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                 )
               ],
             ),
-            Text(widget.event.description),
+            Text(widget.event.descriptionLongue),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

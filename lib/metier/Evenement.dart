@@ -8,7 +8,8 @@ class Evenement {
   String ville;
   String adresse;
   String titre;
-  String description;
+  String descriptionLongue;
+  String descriptionCourt;
   String motCles;
   String image;
   String _dateTime;
@@ -22,7 +23,8 @@ class Evenement {
       String ville,
       String adresse,
       String titre,
-      String description,
+      String descriptionLongue,
+      String descritptionCourte,
       String motCles,
       String image,
       String _dateTime,
@@ -34,7 +36,8 @@ class Evenement {
     this.ville = ville;
     this.adresse = adresse;
     this.titre = titre;
-    this.description = description;
+    this.descriptionLongue = descriptionLongue;
+    this.descriptionCourt = descritptionCourte;
     this.motCles = motCles;
     this.image = image;
     this._dateTime = _dateTime;
@@ -53,7 +56,8 @@ class Evenement {
     this.ville = json['ville'];
     this.adresse = json['adresse'];
     this.titre = json['titre_fr'];
-    this.description = json['description_longue_fr'];
+    this.descriptionLongue = json['description_longue_fr'];
+    this.descriptionCourt  = json['description_fr'];
     this.motCles = json['mots_cles_fr'];
     this.image = json['image'];
     this._dateTime = json['dates'];
@@ -70,7 +74,8 @@ class Evenement {
     data['ville'] = this.ville;
     data['adresse'] = this.adresse;
     data['titre_fr'] = this.titre;
-    data['description_longue_fr'] = this.description;
+    data['description_longue_fr'] = this.descriptionLongue;
+    data['description_fr'] = this.descriptionCourt;
     data['mots_cles_fr'] = this.motCles;
     data['image'] = this.image;
     data['dates'] = this._dateTime;
