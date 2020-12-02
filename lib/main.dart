@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return StreamBuilder(
 
-      stream: GlobaleService.Evenementstream,
+      stream: FirebaseFirestore.instance.collection("Evenements").limit(5).snapshots(),
       builder: (context, snapshot)  {
 
         if(snapshot.hasError){
