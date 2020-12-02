@@ -5,7 +5,7 @@ class GlobaleService {
       FirebaseFirestore.instance.collection("Evenements");
 
   static Stream<QuerySnapshot> get Evenementstream {
-    return Eventcollection.orderBy("titre_fr", descending: true).snapshots();
+    return Eventcollection.orderBy("titre_fr", descending: true).limit(10).snapshots();
   }
 
   Stream<QuerySnapshot> streamRechercheEvenement(
@@ -19,7 +19,7 @@ class GlobaleService {
           if (valeurUser != null && valeurUser != "") {
             retour = Eventcollection.where('titre_fr',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('titre_fr', isLessThan: valeurUser + 'z')
+                .where('titre_fr', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
@@ -31,7 +31,7 @@ class GlobaleService {
           if (valeurUser != null && valeurUser != "") {
             retour = Eventcollection.where('ville',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('ville', isLessThan: valeurUser + 'z')
+                .where('ville', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
@@ -43,7 +43,7 @@ class GlobaleService {
           if (valeurUser != null && valeurUser != "") {
             retour = Eventcollection.where('thematiques',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('thematiques', isLessThan: valeurUser + 'z')
+                .where('thematiques', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
@@ -55,7 +55,7 @@ class GlobaleService {
           if (valeurUser != null && valeurUser != "") {
             retour = Eventcollection.where('mots_cles_fr',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('mots_cles_fr', isLessThan: valeurUser + 'z')
+                .where('mots_cles_fr', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
@@ -67,7 +67,7 @@ class GlobaleService {
           if (valeurUser != null && valeurUser != "") {
             retour = Eventcollection.where('date',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('date', isLessThan: valeurUser + 'z')
+                .where('date', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
