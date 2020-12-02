@@ -14,23 +14,34 @@ class LeftMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     return Drawer(
-        child: Container(
-            decoration: BoxDecoration(),
-            child: Column(children: [
+        child: Center(
+
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               user == null
                   ? FlatButton(
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => Login()));
                       },
-                      child: Text('Connexion'))
+                      child:  ListTile(
+                          contentPadding: EdgeInsets.all(8.0),
+                          leading: Icon(Icons.login),
+                          title: Text("Connexion"),
+                       ),)
                   : FlatButton(
                       onPressed: () => Auth().signOut(),
                       child: Text('Deconnexion')),
               FlatButton(
                   onPressed: () => Navigator.push(context,
                       MaterialPageRoute(builder: (context) => MyApp())),
-                  child: Text('Accueil')),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(8.0),
+                    leading: Icon(Icons.home),
+                    title: Text("Accueil"),
+                  ),),
               if (user != null)
                 FlatButton(onPressed: null, child: Text('Mes parcours'))
             ])));
