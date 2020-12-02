@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/LeftMenu.dart';
 import 'package:hackathon_project/coloredIconText.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hackathon_project/metier/Evenement.dart';
+import 'package:hackathon_project/service/Auth.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class IndividualEventPage extends StatefulWidget {
@@ -36,6 +40,7 @@ class _IndividualEventPage extends State<IndividualEventPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         //todo : Récupérer le nom de l'event
@@ -76,6 +81,7 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                     children: [
                       //TODO : gérer si l'utilisateur est connecté ou non
                       // pour pouvoir noté
+
                       RatingBar(
                         itemCount: 5,
                         onRatingUpdate: _onUpdateRating,
@@ -88,7 +94,7 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                         ),
                         itemSize: 30,
                         //todo
-                        ignoreGestures: false,
+                        ignoreGestures: user == null,
 
                       ),
                       Center(
@@ -129,11 +135,12 @@ class _IndividualEventPage extends State<IndividualEventPage> {
         ),
       ),
       //TODO : gérer si l'utilisateur est connecté ou non
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: user != null ? FloatingActionButton(
         onPressed: _addToParcours,
         tooltip: 'Ajouter au parcours',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ) : null,
+      drawer: LeftMenu(),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
