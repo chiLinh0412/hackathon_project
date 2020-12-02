@@ -9,29 +9,19 @@ class Auth {
 
   Future registerEmail(
       String email, String password, String pseudo, String url) async {
-    try {
       UserCredential res = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       res.user.updateProfile(displayName: pseudo, photoURL: url);
       signInEmail(res.user.email, password);
-    } catch (e) {
-      print(e);
-      return null;
-    }
   }
 
   Future signInEmail(String email, String password) async {
-    try {
       UserCredential res = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       User fuser = res.user;
       return fuser;
-    } catch (e) {
-      print(e.message);
-      return null;
-    }
   }
 
   Future signOut() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_project/service/Auth.dart';
+import 'dart:developer';
 
 import '../main.dart';
 
@@ -77,6 +78,7 @@ class _Register extends State<Register> {
                       : null,
                   onChanged: (val) => urlphoto = val,
                 ),
+                Text(error, style: TextStyle(color:Colors.red),),
                 FlatButton(
                   onPressed: () {
                     register();
@@ -102,12 +104,12 @@ class _Register extends State<Register> {
       });
       try {
         await _auth
-            .registerEmail(email, password, pseudo, urlphoto)
-            .then((value) => {Navigator.pop(context)});
+            .registerEmail(email, password, pseudo, urlphoto);
         setState(() {
           loading = false;
         });
-      } on Exception catch (e) {
+        Navigator.pop(context);
+      } catch (e) {
         setState(() {
           loading = false;
           error = e.toString();

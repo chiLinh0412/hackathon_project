@@ -1,5 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hackathon_project/service/Auth.dart';
 
 import '../main.dart';
@@ -40,7 +42,7 @@ class _Login extends State<Login> {
                       labelText: 'Email', border: OutlineInputBorder()),
                   validator: (val) =>
                       val.isEmpty ? 'Entrez une adresse mail' : null,
-                  onChanged: (val) => password = val,
+                  onChanged: (val) => email = val,
                 ),
                 SizedBox(height: 10.0),
                 TextFormField(
@@ -53,6 +55,7 @@ class _Login extends State<Login> {
                   onChanged: (val) => password = val,
                 ),
                 SizedBox(height: 10.0),
+                Text(error, style:TextStyle(color:Colors.red)),
                 FlatButton(
                   onPressed: () {
                     connexion();
@@ -97,15 +100,16 @@ class _Login extends State<Login> {
         loading = true;
       });
       try {
-        _auth.signInEmail(email, password).then((value) => {
+        await _auth.signInEmail(email, password).then((value) => {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => MyApp()))
             });
         setState(() {
           loading = false;
         });
-      } on Exception catch (e) {
+      }catch (e) {
         setState(() {
+          print('ERROR');
           loading = false;
           error = e.toString();
         });
