@@ -1,8 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+import 'metier/Evenement.dart';
+import 'individual.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -10,7 +20,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return StreamProvider<User>.value(
+      value: Auth().user,
+      child: MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -28,7 +40,8 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+       home: MyHomePage(title: 'Flutter Demo Home Page'),
+      )
     );
   }
 }
@@ -52,12 +65,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  GlobaleService globaleService = new GlobaleService();
+
   String _selection;
   String _recherche;
 
   final myController = TextEditingController();
-
-  final items = List<String>.generate(2, (i) => "Item $i");
 
 
   @override
@@ -121,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style : TextStyle(color: Colors.black,
                     fontSize: 20 )),
             Expanded(
-              child : buildStreamListView(),
+              child : buildStreamListView(context),
             ),],
         ),
       ),
@@ -150,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _selection = newValue;
         });
       },
-      items: <String>['','Lieu','Thème','Date','Mot clés']
+      items: <String>['Mot clés','Lieu','Thème','Date']
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -160,56 +173,64 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildStreamListView() {
-    return new StreamBuilder(
-      stream: GlobaleService.Evenementstream,
+  Widget buildStreamListView(BuildContext context) {
+
+    return StreamBuilder(
+
+      stream: FirebaseFirestore.instance.collection("Evenements").limit(5).snapshots(),
       builder: (context, snapshot)  {
-        print(snapshot);
+
+        if(snapshot.hasError){
+          return Center(
+            child: Text("ERROR ${snapshot.error}"),
+          );
+        }
+
         if(!snapshot.hasData){
           return Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        return ListView.builder (
-          itemCount:  snapshot.data.documents.length,
-          itemBuilder: (context,index){
 
-            DocumentSnapshot documentSnapshot = snapshot.data.documents[index];
+        return ListView(
+            children: snapshot.data.documents.map<Widget>((DocumentSnapshot document) {
 
-            return  Container(
-              child: Card(
-                shape: new RoundedRectangleBorder(
-                    side: new BorderSide(color: Colors.indigo, width: 4.0),
-                    borderRadius: BorderRadius.circular(4.0)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.call), // documentSnapshot["Image"].toString(),
-                      title: Text("test"), //Text(documentSnapshot["Titre"].toString()),
-                      subtitle: Text("test"),//Text(documentSnapshot["Description"].toString()),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          child: const Text('DETAILS'),
-                          onPressed: () { /* ... */ },
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          child: const Text('LISTEN'),
-                          onPressed: () { /* ... */ },
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );;
-        },
+              Evenement event = Evenement.fromJson(document.data()['fields']);
+
+              return
+                Container(
+                  child: Card(
+                  shape: new RoundedRectangleBorder(
+                      side: new BorderSide(color: Colors.blue, width: 4.0),
+                      borderRadius: BorderRadius.circular(4.0)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        contentPadding: EdgeInsets.all(8.0),
+                        leading: Image.network(event.image.toString()),
+                        title: Text(event.titre.toString()+" à "+event.ville.toString()),
+                        subtitle: Text(event.descriptionCourt.toString()),
+                        onTap: ()=> {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder:
+                                    (context) => IndividualEventPage(event: event),
+                            ),
+                          )
+                        },
+
+                       ),
+                    ],
+                  ),
+
+                  ),
+                );
+
+            }).toList() // end of map
 
         );
 

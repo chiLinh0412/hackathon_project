@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_project/LeftMenu.dart';
@@ -5,6 +7,7 @@ import 'package:hackathon_project/coloredIconText.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hackathon_project/metier/Evenement.dart';
 import 'package:hackathon_project/service/Auth.dart';
+import 'package:hackathon_project/service/RatingService.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,18 +32,45 @@ class IndividualEventPage extends StatefulWidget {
 }
 
 class _IndividualEventPage extends State<IndividualEventPage> {
+  void _addToParcours() {}
 
-  void _addToParcours() {
+  void _onUpdateRating(double d) async {
+    log(widget.event.identifiant +
+        " " +
+        Provider.of<User>(context, listen: false).toString());
 
+    await RatingService()
+        .postRating(widget.event.identifiant,
+            Provider.of<User>(context, listen: false).email, d)
+        .then((value) => {
+              setState(() {
+                _rating = d;
+                _avg_rating = value;
+              })
+            });
   }
 
-  void _onUpdateRating(double d){
-
-  }
+  double _rating = -1;
+  double _avg_rating = -1;
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final user = Provider.of<User>(context, listen: false);
+    RatingService().getAverageRating(widget.event.identifiant).then((value) => {
+          this.setState(() {
+            _avg_rating = value;
+          })
+        });
+
+    if (user != null)
+      RatingService()
+          .getRatingForUser(widget.event.identifiant, user.email)
+          .then((value) => {
+                this.setState(() {
+                  _avg_rating = this._avg_rating;
+                  _rating = value;
+                })
+              });
     return Scaffold(
       appBar: AppBar(
         //todo : Récupérer le nom de l'event
@@ -48,35 +78,33 @@ class _IndividualEventPage extends State<IndividualEventPage> {
       ),
       body: Container(
         padding: EdgeInsets.all(3),
-        child:
-        Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             //todo : Récupérer l'url de l'image
-            Image.network(widget.event.image),
+            if (widget.event.image != null) Image.network(widget.event.image),
             Row(
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width*.59,
-                  child:
-                  Column(
+                  width: MediaQuery.of(context).size.width * .59,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.event.adresse+ ", " + widget.event.ville,
+                      Text(
+                        widget.event.adresse + ", " + widget.event.ville,
                         style: TextStyle(
-                            color:Colors.grey,
-                            fontWeight: FontWeight.bold
-                        ),),
-                      Text("ORGANISTEUR",
+                            color: Colors.grey, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "ORGANISTEUR",
                         style: TextStyle(
-                            color:Colors.grey,
-                          fontWeight: FontWeight.bold
-                        ),)
+                            color: Colors.grey, fontWeight: FontWeight.bold),
+                      )
                     ],
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width*.39,
+                  width: MediaQuery.of(context).size.width * .39,
                   child: Column(
                     children: [
                       //TODO : gérer si l'utilisateur est connecté ou non
@@ -88,21 +116,20 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                         allowHalfRating: true,
                         direction: Axis.horizontal,
                         ratingWidget: RatingWidget(
-                            full: Icon(Icons.star, color:Colors.amber),
-                            half: Icon(Icons.star_half, color:Colors.amber),
-                            empty: Icon(Icons.star_border, color:Colors.amber)
-                        ),
+                            full: Icon(Icons.star, color: Colors.amber),
+                            half: Icon(Icons.star_half, color: Colors.amber),
+                            empty:
+                                Icon(Icons.star_border, color: Colors.amber)),
                         itemSize: 30,
                         //todo
                         ignoreGestures: user == null,
-
+                        initialRating: _rating,
                       ),
                       Center(
-                        child:
-                        Text("NOTE/5",
-                          style: TextStyle(
-                              color:Colors.grey
-                          ),),
+                        child: Text(
+                          _avg_rating.toString() + "/5",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       )
                     ],
                   ),
@@ -117,15 +144,22 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                 Container(
                   child: Row(
                     children: [
-                      if(widget.event.numeroTel.isNotEmpty)
-                        ColoredIconText(text:"APPELLER", icon:Icons.phone, onPressed: (){
-                          launch(('tel://${widget.event.numeroTel}'));
-                        },),
-                      if(widget.event.lien_canonique.isNotEmpty)
-                        ColoredIconText(text:"WEB", icon: Icons.description,
-                        onPressed: (){
-                          launch((widget.event.siteWeb));
-                        },)
+                      if (widget.event.numeroTel != null)
+                        ColoredIconText(
+                          text: "APPELLER",
+                          icon: Icons.phone,
+                          onPressed: () {
+                            launch(('tel://${widget.event.numeroTel}'));
+                          },
+                        ),
+                      if (widget.event.lien_canonique != null)
+                        ColoredIconText(
+                          text: "WEB",
+                          icon: Icons.description,
+                          onPressed: () {
+                            launch((widget.event.siteWeb));
+                          },
+                        )
                     ],
                   ),
                 )
@@ -135,12 +169,15 @@ class _IndividualEventPage extends State<IndividualEventPage> {
         ),
       ),
       //TODO : gérer si l'utilisateur est connecté ou non
-      floatingActionButton: user != null ? FloatingActionButton(
-        onPressed: _addToParcours,
-        tooltip: 'Ajouter au parcours',
-        child: Icon(Icons.add),
-      ) : null,
-      drawer: LeftMenu(),// This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: user != null
+          ? FloatingActionButton(
+              onPressed: _addToParcours,
+              tooltip: 'Ajouter au parcours',
+              child: Icon(Icons.add),
+            )
+          : null,
+      drawer:
+          LeftMenu(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
