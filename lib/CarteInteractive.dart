@@ -69,13 +69,15 @@ class _CarteInteractive extends State<CarteInteractive> {
             onPressed: () {},
           ),
         ),
-        body: Stack(
-          children: [
-            googleMap(context),
-            _zoommoins(),
-            _zoomplus(),
-            BuildContainer(),
-          ],
+        body: Container(
+          child: Stack(
+            children: [
+              googleMap(context),
+              _zoommoins(),
+              _zoomplus(),
+              BuildContainer(),
+            ],
+          ),
         ));
   }
 
@@ -89,10 +91,11 @@ class _CarteInteractive extends State<CarteInteractive> {
           scrollDirection: Axis.horizontal,
           children: [
             SizedBox(width: 10.0),
-            Padding(padding: const EdgeInsets.all(8.0)
-            child: _boxes(
+            Padding(
+                padding: const EdgeInsets.all(8.0)
 
-            ))
+
+            )
           ],
         ),
       ),
@@ -100,8 +103,7 @@ class _CarteInteractive extends State<CarteInteractive> {
   }
   Widget googleMap(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+
       child: GoogleMap(
         mapType: MapType.normal,
         markers: _markers,
