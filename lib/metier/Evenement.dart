@@ -1,4 +1,6 @@
+
 import 'dart:core';
+
 
 
 class Evenement {
@@ -43,6 +45,9 @@ class Evenement {
     this.coordonneGeo = coordonneGeo;
   }
 
+  getCoordonneGeo(){
+    return coordonneGeo;
+  }
   Evenement.fromJson(Map<String, dynamic> json) {
     this.identifiant = json['identifiant'];
     this.ville = json['ville'];
