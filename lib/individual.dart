@@ -50,6 +50,7 @@ class _IndividualEventPage extends State<IndividualEventPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             //todo : Récupérer l'url de l'image
+            if(widget.event.image != null)
             Image.network(widget.event.image),
             Row(
               children: [
@@ -114,11 +115,11 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                 Container(
                   child: Row(
                     children: [
-                      if(widget.event.numeroTel.isNotEmpty)
+                      if(widget.event.numeroTel != null)
                         ColoredIconText(text:"APPELLER", icon:Icons.phone, onPressed: (){
                           launch(('tel://${widget.event.numeroTel}'));
                         },),
-                      if(widget.event.lien_canonique.isNotEmpty)
+                      if(widget.event.lien_canonique != null)
                         ColoredIconText(text:"WEB", icon: Icons.description,
                         onPressed: (){
                           launch((widget.event.siteWeb));
