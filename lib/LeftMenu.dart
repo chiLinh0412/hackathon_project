@@ -17,7 +17,7 @@ class LeftMenu extends StatelessWidget {
     final user = Provider.of<User>(context);
     return Drawer(
         child: Container(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -29,18 +29,25 @@ class LeftMenu extends StatelessWidget {
                 children: [
                   user == null
                       ? FlatButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Login()));
-                    },
-                    child:  ListTile(
-                      contentPadding: EdgeInsets.all(8.0),
-                      leading: Icon(Icons.login),
-                      title: Text("Connexion"),
-                    ),)
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Login()));
+                          },
+                          child: ListTile(
+                            contentPadding: EdgeInsets.all(8.0),
+                            leading: Icon(Icons.login),
+                            title: Text("Connexion"),
+                          ),
+                        )
                       : FlatButton(
-                      onPressed: () => Auth().signOut(),
-                      child: Text('Deconnexion')),
+                          onPressed: () => Auth().signOut(),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.all(8.0),
+                            title: Text('Deconnexion'),
+                            leading: Icon(Icons.exit_to_app),
+                          )),
                   FlatButton(
                     onPressed: () => Navigator.push(context,
                         MaterialPageRoute(builder: (context) => MyApp())),
@@ -48,27 +55,36 @@ class LeftMenu extends StatelessWidget {
                       contentPadding: EdgeInsets.all(8.0),
                       leading: Icon(Icons.home),
                       title: Text("Accueil"),
-                    ),),
+                    ),
+                  ),
                   if (user != null)
                     FlatButton(
-                        onPressed: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Parcours())),
-                        child: Text('Mes parcours')
-                    ),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Parcours())),
+                        child:ListTile(
+                          contentPadding: EdgeInsets.all(8.0),
+                          title:Text('Mes parcours'),
+                          leading: Icon(Icons.not_listed_location_sharp),
+                        )),
                   FlatButton(
-                    onPressed: null,
-                    //=> Navigator.push(context,
-                    // MaterialPageRoute(builder: (context) => CarteInteractive())
-                    child: Text('Carte interactive'),
-                  ),
-
+                      onPressed: null,
+                      //=> Navigator.push(context,
+                      // MaterialPageRoute(builder: (context) => CarteInteractive())
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(8.0),
+                        leading: Icon(Icons.map_outlined),
+                        title: Text('Carte interactive'),
+                      )),
                   FlatButton(
                       onPressed: _launchLink,
-                      child: Text('Lien Carte interactive ')
-                  ),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(8.0),
+                        title: Text('Lien Carte interactive '),
+                        leading: Icon(Icons.map),
+                      ),),
                 ])));
-
-
   }
 
   void _launchLink() async {
