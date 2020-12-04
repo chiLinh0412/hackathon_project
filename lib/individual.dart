@@ -97,6 +97,12 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                         style: TextStyle(
                             color: Colors.grey, fontWeight: FontWeight.bold),
                       ),
+                      Text("HORRAIRE: " + widget.event.horraire,
+                        style: TextStyle(
+                            color:Colors.grey,
+                            fontWeight: FontWeight.bold
+                        ),),
+                      SizedBox(height: 10.0),
                       Text(
                         "ORGANISTEUR",
                         style: TextStyle(
