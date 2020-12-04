@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hackathon_project/CarteInteractive.dart';
 import 'package:hackathon_project/coloredIconText.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hackathon_project/connectionUser/Login.dart';
@@ -24,35 +23,52 @@ class LeftMenu extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [Colors.blue, Colors.white])),
-            child: Column(children: [
-              user == null
-                  ? FlatButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Login()));
-                      },
-                      child: Text('Connexion'))
-                  : FlatButton(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  user == null
+                      ? FlatButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
+                    },
+                    child:  ListTile(
+                      contentPadding: EdgeInsets.all(8.0),
+                      leading: Icon(Icons.login),
+                      title: Text("Connexion"),
+                    ),)
+                      : FlatButton(
                       onPressed: () => Auth().signOut(),
                       child: Text('Deconnexion')),
-              FlatButton(
-                  onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyApp())),
-                  child: Text('Accueil')),
-              if (user != null)
-                FlatButton(
+                  FlatButton(
                     onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Parcours())),
-                    child: Text('Mes parcours')),
-              FlatButton(
-                  onPressed: null,
-                  //=> Navigator.push(context,
-                  // MaterialPageRoute(builder: (context) => CarteInteractive())),
-                  child: Text('Carte interactive')),
-              FlatButton(
-                  onPressed: _launchLink,
-                  child: Text('Lien Carte interactive ')),
-            ])));
+                        MaterialPageRoute(builder: (context) => MyApp())),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(8.0),
+                      leading: Icon(Icons.home),
+                      title: Text("Accueil"),
+                    ),),
+                  if (user != null)
+                    FlatButton(
+                        onPressed: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Parcours())),
+                        child: Text('Mes parcours')
+                    ),
+                  FlatButton(
+                    onPressed: null,
+                    //=> Navigator.push(context,
+                    // MaterialPageRoute(builder: (context) => CarteInteractive())
+                    child: Text('Carte interactive'),
+                  ),
+
+                  FlatButton(
+                      onPressed: _launchLink,
+                      child: Text('Lien Carte interactive ')
+                  ),
+                ])));
+
+
   }
 
   void _launchLink() async {

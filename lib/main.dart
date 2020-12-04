@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hackathon_project/CarteInteractive.dart';
 import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
 import 'package:provider/provider.dart';
@@ -23,27 +22,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
-      value: Auth().user,
-      child: MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-       home:  MyHomePage(title: 'La fête des sciences'),
-      )
+        value: Auth().user,
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // Try running your application with "flutter run". You'll see the
+            // application has a blue toolbar. Then, without quitting the app, try
+            // changing the primarySwatch below to Colors.green and then invoke
+            // "hot reload" (press "r" in the console where you ran "flutter run",
+            // or simply save your changes to "hot reload" in a Flutter IDE).
+            // Notice that the counter didn't reset back to zero; the application
+            // is not restarted.
+            primarySwatch: Colors.blue,
+            // This makes the visual density adapt to the platform that you run
+            // the app on. For desktop platforms, the controls will be smaller and
+            // closer together (more dense) than on mobile platforms.
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: MyHomePage(title: 'La fête des sciences'),
+        )
     );
   }
 }
@@ -72,6 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String _selection;
   String _recherche;
 
+  Stream<QuerySnapshot> _stream = GlobaleService.Evenementstream;
+
   final myController = TextEditingController();
 
 
@@ -80,6 +81,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     super.dispose();
+  }
+
+  void _filtrer(String select, String value){
+
+    setState(() {
+      _stream = globaleService.streamRechercheEvenement(select,value);
+    });
+
+
   }
 
 
@@ -91,6 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
         title: Text(widget.title),
       ),
+
+      drawer:
+      LeftMenu(),
 
       body: Container (
 
@@ -126,22 +139,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {
                         _recherche = myController.text;
                       });
+                      _filtrer(_selection,_recherche);
                     },
                   ),
 
 
                 ],),
             ),
-            Text("Verification ---> Filtrage par $_selection, La valeur $_recherche ",
-                style : TextStyle(color: Colors.black,
-                    fontSize: 20 )),
             Expanded(
-              child : buildStreamListView(context),
+              child : buildStreamListView(context,_stream),
             ),],
         ),
       ),
-      drawer:
-      LeftMenu(),
     );
   }
 
@@ -167,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _selection = newValue;
         });
       },
-      items: <String>['Mot clés','Lieu','Thème','Date']
+      items: <String>['Titre','Mot clés','Ville','Thème','Date']
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -177,11 +186,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget buildStreamListView(BuildContext context) {
+  Widget buildStreamListView(BuildContext context,Stream<QuerySnapshot> _stream) {
 
     return StreamBuilder(
 
-      stream: FirebaseFirestore.instance.collection("Evenements").limit(5).snapshots(),
+      stream: _stream,
       builder: (context, snapshot)  {
 
         if(snapshot.hasError){
@@ -205,31 +214,31 @@ class _MyHomePageState extends State<MyHomePage> {
               return
                 Container(
                   child: Card(
-                  shape: new RoundedRectangleBorder(
-                      side: new BorderSide(color: Colors.blue, width: 4.0),
-                      borderRadius: BorderRadius.circular(4.0)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        contentPadding: EdgeInsets.all(8.0),
-                        leading: Image.network(event.image.toString()),
-                        title: Text(event.titre.toString()+" à "+event.ville.toString()),
-                        subtitle: Text(event.descriptionCourt.toString()),
-                        onTap: ()=> {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
+                    shape: new RoundedRectangleBorder(
+                        side: new BorderSide(color: Colors.blue, width: 4.0),
+                        borderRadius: BorderRadius.circular(4.0)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          contentPadding: EdgeInsets.all(8.0),
+                          leading: Image.network(event.image.toString()),
+                          title: Text(event.titre.toString()+" à "+event.ville.toString()),
+                          subtitle: Text(event.descriptionCourt.toString()),
+                          onTap: ()=> {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
                                 builder:
                                     (context) => IndividualEventPage(event: event),
-                            ),
-                          )
-                        },
+                              ),
+                            )
+                          },
 
-                       ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
 
                   ),
                 );

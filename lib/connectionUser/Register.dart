@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_project/metier/Evenement.dart';
 import 'package:hackathon_project/service/Auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
@@ -26,9 +28,9 @@ class _Register extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    if (null != Provider.of<User>(context)) {
-      return MyApp();
-    }
+    //if (null != Provider.of<User>(context)) {
+    //  return MyApp();
+    //}
 
     return Scaffold(
       appBar: AppBar(
@@ -113,7 +115,9 @@ class _Register extends State<Register> {
             .registerEmail(email, password, pseudo, urlphoto);
         setState(() {
           loading = false;
-        });
+          ajouterUser();
+        }
+        );
         Navigator.pop(context);
       } catch (e) {
         setState(() {
@@ -123,4 +127,14 @@ class _Register extends State<Register> {
       }
     }
   }
+
+  void ajouterUser(){
+    FirebaseFirestore.instance.collection("parcours").doc(email).set({
+      'id_user' : email,
+      'titre' : '',
+    });
+
+  }
+
+
 }

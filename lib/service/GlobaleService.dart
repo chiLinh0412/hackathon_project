@@ -5,7 +5,7 @@ class GlobaleService {
       FirebaseFirestore.instance.collection("Evenements");
 
   static Stream<QuerySnapshot> get Evenementstream {
-    return Eventcollection.orderBy("titre_fr", descending: true).limit(10).snapshots();
+    return Eventcollection.limit(10).snapshots();
   }
 
   Stream<QuerySnapshot> streamRechercheEvenement(
@@ -14,61 +14,69 @@ class GlobaleService {
     String crit = critere;
 
     switch (crit) {
-      case "titre_fr":
+      case "Titre":
         {
           if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('titre_fr',
+            retour = Eventcollection.where('fields.titre_fr',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('titre_fr', isLessThan: valeurUser + 'z').limit(10)
+                .where('fields.titre_fr', isLessThan: valeurUser + 'z').limit(10)
+                .snapshots();
+          }else{
+            retour = Evenementstream;
+          }
+          return retour;
+        }
+        break;
+
+      case "Ville":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('fields.ville',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('fields.ville', isLessThan: valeurUser + 'z').limit(10)
+                .snapshots();
+          }else{
+            retour = Evenementstream;
+          }
+          return retour;
+        }
+        break;
+
+      case "Thème":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('fields.thematiques',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('fields.thematiques', isLessThan: valeurUser + 'z').limit(10)
+                .snapshots();
+          }else{
+            retour = Evenementstream;
+          }
+          return retour;
+        }
+        break;
+
+      case "Mot clés":
+        {
+          if (valeurUser != null && valeurUser != "") {
+            retour = Eventcollection.where('fields.mots_cles_fr',
+                    isGreaterThanOrEqualTo: valeurUser)
+                .where('fields.mots_cles_fr', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
           }
           return retour;
         }
         break;
 
-      case "ville":
+      case "Date":
         {
           if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('ville',
+            retour = Eventcollection.where('fields.date',
                     isGreaterThanOrEqualTo: valeurUser)
-                .where('ville', isLessThan: valeurUser + 'z').limit(10)
+                .where('fields.date', isLessThan: valeurUser + 'z').limit(10)
                 .snapshots();
-          }
-          return retour;
-        }
-        break;
-
-      case "themetique":
-        {
-          if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('thematiques',
-                    isGreaterThanOrEqualTo: valeurUser)
-                .where('thematiques', isLessThan: valeurUser + 'z').limit(10)
-                .snapshots();
-          }
-          return retour;
-        }
-        break;
-
-      case "Mot_cle":
-        {
-          if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('mots_cles_fr',
-                    isGreaterThanOrEqualTo: valeurUser)
-                .where('mots_cles_fr', isLessThan: valeurUser + 'z').limit(10)
-                .snapshots();
-          }
-          return retour;
-        }
-        break;
-
-      case "date":
-        {
-          if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('date',
-                    isGreaterThanOrEqualTo: valeurUser)
-                .where('date', isLessThan: valeurUser + 'z').limit(10)
-                .snapshots();
+          } else {
+            retour = Evenementstream;
           }
           return retour;
         }
