@@ -7,6 +7,7 @@ import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
 import 'package:provider/provider.dart';
 
+import 'LeftMenu.dart';
 import 'metier/Evenement.dart';
 import 'individual.dart';
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-       home: CarteInteractive(),
+       home:  MyHomePage(title: 'La fête des sciences'),
       )
     );
   }
@@ -139,6 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),],
         ),
       ),
+      drawer:
+      LeftMenu(),
     );
   }
 
