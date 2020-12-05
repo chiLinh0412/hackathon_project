@@ -37,14 +37,12 @@ class RatingService {
   }
 
   Future<double> getRatingForUser(String id_event, id_user) async {
-    double ret = await RatingCollection.where('id_event', isEqualTo: id_event)
-        .where('id_user', isEqualTo: id_user)
-        .snapshots()
-        .forEach((element) {
-      element.docs.forEach((doc) => doc['note']);
-    });
-
-    print(ret);
+    double ret;
+    try {
+      await RatingCollection.doc(id_event + id_user)
+          .get()
+          .then((value) => {ret = value.data()['note']});
+    } catch (e) {}
     return ret == null ? 0 : ret;
   }
 }
