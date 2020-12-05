@@ -37,13 +37,6 @@ class _Register extends State<Register> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text("Register"),
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pushNamed(context, 'Login'),
-          ),
-        ],
-        leading: new Container(),
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Container(
