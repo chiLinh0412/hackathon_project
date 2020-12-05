@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobaleService globaleService = new GlobaleService();
 
   String _selection;
-  String _recherche="";
+  String _recherche;
 
   Stream<QuerySnapshot> _stream = GlobaleService.Evenementstream;
 
@@ -151,7 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     tooltip: 'Filtre',
                     onPressed: () {
                       setState(() {
-                        _recherche = myController.text;
+                        if(_selection != "Date")
+                        _recherche = myController.text  ;
                       });
                       _filtrer(_selection,_recherche);
                     },
