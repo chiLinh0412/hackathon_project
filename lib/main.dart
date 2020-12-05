@@ -239,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ListTile(
                           contentPadding: EdgeInsets.all(8.0),
                           leading: Image.network(event.image.toString()),
-                          title: Text(event.titre.toString()+" à "+event.ville.toString()+" "+_recherche),
+                          title: Text(event.titre.toString()+" à "+event.ville.toString()),
                           subtitle: Text(event.descriptionCourt.toString()),
                           onTap: ()=> {
                             Navigator.push(
