@@ -8,6 +8,7 @@ import 'package:hackathon_project/coloredIconText.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hackathon_project/metier/Evenement.dart';
 import 'package:hackathon_project/service/Auth.dart';
+import 'package:hackathon_project/service/OwnershipService.dart';
 import 'package:hackathon_project/service/RatingService.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,9 +36,10 @@ class IndividualEventPage extends StatefulWidget {
 class _IndividualEventPage extends State<IndividualEventPage> {
   void _addToParcours() {
     String email = FirebaseAuth.instance.currentUser.email;
-    FirebaseFirestore.instance.collection("parcours").doc(email).update({
-      'titre' : widget.event.titre
-    });
+    FirebaseFirestore.instance
+        .collection("parcours")
+        .doc(email)
+        .update({'titre': widget.event.titre});
   }
 
   void _onUpdateRating(double d) async {
@@ -55,24 +57,17 @@ class _IndividualEventPage extends State<IndividualEventPage> {
   double _rating = -1;
   double _avg_rating = -1;
 
+  int fill;
+  int max;
+
+  int updateValue;
+
+  bool isOwner = false;
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context, listen: false);
-    RatingService().getAverageRating(widget.event.identifiant).then((value) => {
-      this.setState(() {
-        _avg_rating = value;
-      })
-    });
-
-    if (user != null)
-      RatingService()
-          .getRatingForUser(widget.event.identifiant, user.email)
-          .then((value) => {
-        this.setState(() {
-          _avg_rating = this._avg_rating;
-          _rating = value;
-        })
-      });
+    loadState(user);
     return Scaffold(
       appBar: AppBar(
         //todo : Récupérer le nom de l'event
@@ -170,7 +165,32 @@ class _IndividualEventPage extends State<IndividualEventPage> {
                         )
                     ],
                   ),
-                )
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text("Places: "),
+                isOwner
+                    ? Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          labelText: 'Disponible',
+                          border: OutlineInputBorder()),
+                      initialValue: fill.toString(),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        if (int.parse(value) <= max)
+                          setState(() {
+                            updateValue = int.parse(value);
+                          });
+                      },
+                    ))
+                    : Text(fill.toString()),
+                Text(" / " + max.toString()),
+                if (isOwner)
+                  FlatButton(
+                      onPressed: updateEventAttendance, child: Text("Update"))
               ],
             )
           ],
@@ -184,8 +204,50 @@ class _IndividualEventPage extends State<IndividualEventPage> {
         child: Icon(Icons.add),
       )
           : null,
-      drawer:
-      LeftMenu(), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void loadState(User user) {
+    RatingService().getAverageRating(widget.event.identifiant).then((value) => {
+      this.setState(() {
+        _avg_rating = value;
+      })
+    });
+
+    if (user != null) {
+      RatingService()
+          .getRatingForUser(widget.event.identifiant, user.email)
+          .then((value) => {
+        this.setState(() {
+          _rating = value;
+        })
+      });
+
+      OwnershipService()
+          .getEventOwner(widget.event.identifiant)
+          .then((value) => {
+        this.setState(() {
+          isOwner = value == user.email;
+        })
+      });
+    }
+
+    OwnershipService().getFilling(widget.event.identifiant).then((value) => {
+      this.setState(() {
+        fill = value;
+      })
+    });
+
+    OwnershipService().getMaxFilling(widget.event.identifiant).then((value) => {
+      this.setState(() {
+        max = value;
+      })
+    });
+  }
+
+  void updateEventAttendance() {
+    if(updateValue != null && updateValue <= max)
+      OwnershipService().updateFilling(widget.event.identifiant, updateValue);
   }
 }
