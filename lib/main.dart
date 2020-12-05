@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hackathon_project/service/Auth.dart';
 import 'package:hackathon_project/service/GlobaleService.dart';
 import 'package:provider/provider.dart';
+import 'package:cupertino_date_textbox/cupertino_date_textbox.dart';
+import 'package:intl/intl.dart';
 
 import 'LeftMenu.dart';
 import 'metier/Evenement.dart';
@@ -69,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GlobaleService globaleService = new GlobaleService();
 
   String _selection;
-  String _recherche;
+  String _recherche="";
 
   Stream<QuerySnapshot> _stream = GlobaleService.Evenementstream;
 
@@ -84,13 +86,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _filtrer(String select, String value){
-
     setState(() {
       _stream = globaleService.streamRechercheEvenement(select,value);
     });
-
-
   }
+
+
+  final f = new DateFormat('yyyy-MM-dd');
+  void _onDateChange(DateTime date){
+    setState(() {
+      _recherche = f.format(date);
+    });
+  }
+
+
 
 
   @override
@@ -124,13 +133,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   select(),
 
                   Expanded(
-                    child : TextField(
+                    child : (_selection != "Date")
+                        ? TextField(
                       controller: myController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Recherche',
-                      ),
-                    ),
+                       ),
+                      )
+                        :CupertinoDateTextBox(
+                        initialValue: DateTime.now(),
+                        onDateChange: _onDateChange,
+                        hintText: 'Hint Text'),
                   ),
                   IconButton(
                     icon: Icon(Icons.search),
@@ -142,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _filtrer(_selection,_recherche);
                     },
                   ),
+
 
 
                 ],),
@@ -224,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ListTile(
                           contentPadding: EdgeInsets.all(8.0),
                           leading: Image.network(event.image.toString()),
-                          title: Text(event.titre.toString()+" à "+event.ville.toString()),
+                          title: Text(event.titre.toString()+" à "+event.ville.toString()+" "+_recherche),
                           subtitle: Text(event.descriptionCourt.toString()),
                           onTap: ()=> {
                             Navigator.push(

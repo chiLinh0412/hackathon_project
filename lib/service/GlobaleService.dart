@@ -71,9 +71,8 @@ class GlobaleService {
       case "Date":
         {
           if (valeurUser != null && valeurUser != "") {
-            retour = Eventcollection.where('fields.date',
-                    isGreaterThanOrEqualTo: valeurUser)
-                .where('fields.date', isLessThan: valeurUser + 'z').limit(10)
+            retour = Eventcollection
+                .where('fields.derniere_date', isEqualTo: valeurUser).limit(10)
                 .snapshots();
           } else {
             retour = Evenementstream;

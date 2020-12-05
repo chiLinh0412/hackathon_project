@@ -42,6 +42,9 @@ dependencies:
   google_maps_flutter: ^1.0.6
   flutter_search_bar: ^2.1.0
   font_awesome_flutter: ^8.10.0
+  cupertino_date_textbox: ^1.0.0+3
+  cupertino_radio_choice: 1.0.0+2
+  intl: ^0.16.1
 
 
 dev_dependencies:
