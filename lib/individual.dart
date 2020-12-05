@@ -73,127 +73,129 @@ class _IndividualEventPage extends State<IndividualEventPage> {
         //todo : Récupérer le nom de l'event
         title: Text(widget.event.titre),
       ),
-      body: Container(
-        padding: EdgeInsets.all(3),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //todo : Récupérer l'url de l'image
-            if (widget.event.image != null) Image.network(widget.event.image),
-            Row(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * .59,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.event.adresse + ", " + widget.event.ville,
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.bold),
-                      ),
-                      Text("HORRAIRE: " + widget.event.horraire,
-                        style: TextStyle(
-                            color:Colors.grey,
-                            fontWeight: FontWeight.bold
-                        ),),
-                      SizedBox(height: 10.0),
-                      Text(
-                        "ORGANISTEUR",
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * .39,
-                  child: Column(
-                    children: [
-                      //TODO : gérer si l'utilisateur est connecté ou non
-                      // pour pouvoir noté
-
-                      RatingBar(
-                        itemCount: 5,
-                        onRatingUpdate: _onUpdateRating,
-                        allowHalfRating: true,
-                        direction: Axis.horizontal,
-                        ratingWidget: RatingWidget(
-                            full: Icon(Icons.star, color: Colors.amber),
-                            half: Icon(Icons.star_half, color: Colors.amber),
-                            empty:
-                            Icon(Icons.star_border, color: Colors.amber)),
-                        itemSize: 30,
-                        //todo
-                        ignoreGestures: user == null,
-                        initialRating: _rating,
-                      ),
-                      Center(
-                        child: Text(
-                          _avg_rating.toString() + "/5",
-                          style: TextStyle(color: Colors.grey),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              //todo : Récupérer l'url de l'image
+              if (widget.event.image != null) Image.network(widget.event.image),
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * .59,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.event.adresse + ", " + widget.event.ville,
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold),
                         ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Text(widget.event.descriptionLongue),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //todo les ifs
-                Container(
-                  child: Row(
-                    children: [
-                      if (widget.event.numeroTel != null)
-                        ColoredIconText(
-                          text: "APPELLER",
-                          icon: Icons.phone,
-                          onPressed: () {
-                            launch(('tel://${widget.event.numeroTel}'));
-                          },
-                        ),
-                      if (widget.event.lien_canonique != null)
-                        ColoredIconText(
-                          text: "WEB",
-                          icon: Icons.description,
-                          onPressed: () {
-                            launch((widget.event.siteWeb));
-                          },
+                        Text("HORRAIRE: " + widget.event.horraire,
+                          style: TextStyle(
+                              color:Colors.grey,
+                              fontWeight: FontWeight.bold
+                          ),),
+                        SizedBox(height: 10.0),
+                        Text(
+                          "ORGANISTEUR",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.bold),
                         )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text("Places: "),
-                isOwner
-                    ? Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Disponible',
-                          border: OutlineInputBorder()),
-                      initialValue: fill.toString(),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (int.parse(value) <= max)
-                          setState(() {
-                            updateValue = int.parse(value);
-                          });
-                      },
-                    ))
-                    : Text(fill.toString()),
-                Text(" / " + max.toString()),
-                if (isOwner)
-                  FlatButton(
-                      onPressed: updateEventAttendance, child: Text("Update"))
-              ],
-            )
-          ],
+                  Container(
+                    width: MediaQuery.of(context).size.width * .39,
+                    child: Column(
+                      children: [
+                        //TODO : gérer si l'utilisateur est connecté ou non
+                        // pour pouvoir noté
+
+                        RatingBar(
+                          itemCount: 5,
+                          onRatingUpdate: _onUpdateRating,
+                          allowHalfRating: true,
+                          direction: Axis.horizontal,
+                          ratingWidget: RatingWidget(
+                              full: Icon(Icons.star, color: Colors.amber),
+                              half: Icon(Icons.star_half, color: Colors.amber),
+                              empty:
+                              Icon(Icons.star_border, color: Colors.amber)),
+                          itemSize: 30,
+                          //todo
+                          ignoreGestures: user == null,
+                          initialRating: _rating,
+                        ),
+                        Center(
+                          child: Text(
+                            _avg_rating.toString() + "/5",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              Text(widget.event.descriptionLongue),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //todo les ifs
+                  Container(
+                    child: Row(
+                      children: [
+                        if (widget.event.numeroTel != null)
+                          ColoredIconText(
+                            text: "APPELLER",
+                            icon: Icons.phone,
+                            onPressed: () {
+                              launch(('tel://${widget.event.numeroTel}'));
+                            },
+                          ),
+                        if (widget.event.lien_canonique != null)
+                          ColoredIconText(
+                            text: "WEB",
+                            icon: Icons.description,
+                            onPressed: () {
+                              launch((widget.event.siteWeb));
+                            },
+                          )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text("Places: "),
+                  isOwner
+                      ? Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            labelText: 'Disponible',
+                            border: OutlineInputBorder()),
+                        initialValue: fill.toString(),
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (int.parse(value) <= max)
+                            setState(() {
+                              updateValue = int.parse(value);
+                            });
+                        },
+                      ))
+                      : Text(fill.toString()),
+                  Text(" / " + max.toString()),
+                  if (isOwner)
+                    FlatButton(
+                        onPressed: updateEventAttendance, child: Text("Update"))
+                ],
+              )
+            ],
+          ),
         ),
       ),
       //TODO : gérer si l'utilisateur est connecté ou non
