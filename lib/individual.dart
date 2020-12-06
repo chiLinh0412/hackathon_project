@@ -36,10 +36,10 @@ class IndividualEventPage extends StatefulWidget {
 class _IndividualEventPage extends State<IndividualEventPage> {
   void _addToParcours() {
     String email = FirebaseAuth.instance.currentUser.email;
+    //String idCurrant =  FirebaseFirestore.instance.collection("parcours").doc(email).get("id_courrant").toString();
     FirebaseFirestore.instance
         .collection("parcours")
-        .doc(email)
-        .update({'titre': widget.event.titre});
+        .doc(email).updateData({"titre": FieldValue.arrayUnion([widget.event.titre])});
   }
 
   void _onUpdateRating(double d) async {
