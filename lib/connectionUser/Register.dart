@@ -108,10 +108,9 @@ class _Register extends State<Register> {
   void ajouterUser(){
     FirebaseFirestore.instance.collection("parcours").doc(email).set({
       'id_user' : email,
-      'titre' : '',
+      'id_courrant' : 0,
     });
 
   }
-
 
 }
