@@ -8,12 +8,12 @@ class Auth {
   }
 
   Future registerEmail(
-      String email, String password, String pseudo, String url) async {
+      String email, String password) async {
       UserCredential res = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      res.user.updateProfile(displayName: pseudo, photoURL: url);
+
       signInEmail(res.user.email, password);
   }
 

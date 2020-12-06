@@ -19,8 +19,7 @@ class _Register extends State<Register> {
   final _keyForm = GlobalKey<FormState>();
   String email = '';
   String password = '';
-  String pseudo = '';
-  String urlphoto = '';
+
 
   //Widget loadingWidget = Loading();
   bool loading = false;
@@ -63,22 +62,7 @@ class _Register extends State<Register> {
                   onChanged: (val) => password = val,
                 ),
                 SizedBox(height: 10.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Pseudo', border: OutlineInputBorder()),
-                  validator: (val) =>
-                      val.isEmpty ? 'Entrez votre pseudo' : null,
-                  onChanged: (val) => pseudo = val,
-                ),
-                SizedBox(height: 10.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'URL Photo', border: OutlineInputBorder()),
-                  validator: (val) => val.isEmpty
-                      ? 'Entrez une url image présente sur le net'
-                      : null,
-                  onChanged: (val) => urlphoto = val,
-                ),
+
                 Text(error, style: TextStyle(color:Colors.red),),
                 FlatButton(
                   onPressed: () {
@@ -105,7 +89,7 @@ class _Register extends State<Register> {
       });
       try {
         await _auth
-            .registerEmail(email, password, pseudo, urlphoto);
+            .registerEmail(email, password);
         setState(() {
           loading = false;
           ajouterUser();
